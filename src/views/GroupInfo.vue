@@ -51,9 +51,9 @@
   
       filteredUsers() {
         console.log("selectedNodeChildren",this.selectedNodeChildren)
-        return this.selectedNodeChildren.filter(node =>
+        return this.selectedNodeChildren?this.selectedNodeChildren.filter(node =>
           node.name.toLowerCase().includes(this.searchQuery.toLowerCase())
-        );
+        ):[];
       },
       
     },

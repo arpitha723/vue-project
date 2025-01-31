@@ -33,7 +33,7 @@ export default createStore({
     const node = findNodeById(state.data, nodeObject.id);
       console.log(node)
       if (node) {
-        state.selectedNodeChildren = node.children;
+        state.selectedNodeChildren = node.children?node.children:[];
       }
       console.log('state.selectedNodeChild',state.selectedNodeChildre)
     },
@@ -80,13 +80,21 @@ export default createStore({
       }
       addNode(state.data);
     },
-    ADD_CHILD(state, child) {
+    ADD_CHILD(state, newChild) {
 
       const node = findNodeById(state.data, state.selectedNodeId.id);
       console.log(node)
       if (node) {
-        node.children = [...(node.children || []), child];
-      //  node.children.push(child);
+        if (!node.children) {
+          node.children = [];  // Ensure 'children' exists
+        }
+        node.children.push(newChild); 
+
+        if (node.id === state.selectedNodeId.id) {
+          state.selectedNodeChildren = node.children;
+        }
+
+        console.log("state.selectedNodeChildren",state.selectedNodeChildren )
       }
     
     },
@@ -117,6 +125,7 @@ export default createStore({
     },
     addChild({ commit }, child) {
       commit('ADD_CHILD', child);
+      // this.$forceUpdate();
     },
     deleteChild({ commit }, childId) {
       commit('DELETE_CHILD', childId);
