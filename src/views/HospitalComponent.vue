@@ -25,17 +25,17 @@ export default {
       editNode:false,
       showModal: false,
       showAddModal:false,
-      selectedNode: null,
+      // selectedNode: null,
       updateData:null,
       
     };
   },
   components: { PopupModal,TreeNode,AddPopup },
   computed: {
-    ...mapState(["data"]), // Get tree data from Vuex
+    ...mapState(["data","selectedNodeId",]), // Get tree data from Vuex
   },
   methods: {
-    ...mapActions(["startEditing", "saveNodeEdit","addNode"]),
+    ...mapActions(["startEditing", "saveNodeEdit","addNode","selectNode"]),
     showPopup(node) {
       this.updateData = node;
       console.log("node",node)
@@ -57,28 +57,30 @@ export default {
       child.isEditing = false;
     },
     openModal(node) {
-      this.selectedNode = node;
+      this.selectNode(node) 
       this.showModal = true;
     },
     openAddModal(node) {
-      this.selectedNode = node;
+      console.log("node",node)
+      this.selectNode(node)
       this.showAddModal = true;
     },
     closeModal() {
       this.showModal = false;
-      this.selectedNode = null;
+      this.selectNode(null)
     },
     closeAddModal() {
       this.showAddModal = false;
-      this.selectedNode = null;
+      this.selectNode(null)
     },
     edit() {
       this.editNode = true;
       this.showModal = false;
      console.log("editNode")
     },
-    createChildGroup() {
-      console.log()
+    createChildGroup(node) {
+      console.log("node",node)
+      this.selectNode(node)
       this.showAddModal = true;
       this.showModal = false;
      console.log("editNode")
@@ -90,11 +92,13 @@ export default {
        this.editNode = false
     },
     saveGroup(name){
-      this.addNode({ nodeId: this.selectedNode.id, newName: name })
+      this.selectNode(this.selectedNodeId)
+      this.addNode({ nodeId: this.selectedNodeId.id, newName: name })
     },
     addRemoveClinicians(){
-     
-      this.$router.push('/group-info');
+      console.log("ggggg",this.selectedNodeId)
+      let id = this.selectedNodeId.id
+      this.$router.push({ name: 'GroupInfo', params: { id: id } });
     }
 
 }

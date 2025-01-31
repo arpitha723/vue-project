@@ -1,12 +1,43 @@
 import { createStore } from 'vuex';
 import data from '../data/data'; // Import your tree data
-
+function findNodeById(nodes, id) {
+  for (let node of nodes) {
+    if (node.id === id) {
+      return node; // Found the node
+    }
+    if (node.children) {
+      const found = findNodeById(node.children, id); // Recursively search in children
+      if (found) {
+        return found; // Return the found node
+      }
+    }
+  }
+  return null; // Return null if no match is found
+}
 export default createStore({
   state: {
     data: data, // Store tree data globally
-    editingNodeId: null, // Track which node is being edited
+    editingNodeId: null,
+    selectedNodeId: null,
+    selectedNodeChildren: [] // Track which node is being edited
   },
   mutations: {
+    SET_SELECTED_NODE(state, nodeObject) {
+      state.selectedNodeId = nodeObject;
+    //   console.log('state.data:', state.data); // Log state data
+    // console.log('nodeObject.id:', nodeObject.id)
+    if(!nodeObject){
+      return
+    }
+  
+    const node = findNodeById(state.data, nodeObject.id);
+      console.log(node)
+      if (node) {
+        state.selectedNodeChildren = node.children;
+      }
+      console.log('state.selectedNodeChild',state.selectedNodeChildre)
+    },
+
     SET_EDITING_NODE(state, nodeId) {
       state.editingNodeId = nodeId; // Store ID of node being edited
     },
@@ -28,7 +59,7 @@ export default createStore({
     
       function addNode(nodes) {
         nodes.forEach((node) => {
-          console.log("node click",node)
+          // console.log("node click",node)
           if (node.id === nodeId) {
              let data ={
               id: `child-${Date.now()}`, name: newName
@@ -49,10 +80,31 @@ export default createStore({
       }
       addNode(state.data);
     },
-    
+    ADD_CHILD(state, child) {
 
+      const node = findNodeById(state.data, state.selectedNodeId.id);
+      console.log(node)
+      if (node) {
+        node.children = [...(node.children || []), child];
+      //  node.children.push(child);
+      }
+    
+    },
+    DELETE_CHILD(state, childId) {
+      console.log("childId",state.selectedNodeId.id)
+      const node = findNodeById(state.data, state.selectedNodeId.id)
+      if (node) {
+        node.children = node.children.filter(child => child.id !== childId.id);
+        state.selectedNodeChildren = state.selectedNodeChildren.filter(child => child.id !== childId.id)
+      }
+    
+    }
   },
   actions: {
+    selectNode({ commit }, nodeId) {
+      commit('SET_SELECTED_NODE', nodeId);
+    },
+
     startEditing({ commit }, nodeId) {
       commit("SET_EDITING_NODE", nodeId);
     },
@@ -62,10 +114,30 @@ export default createStore({
     },
     addNode({ commit }, { nodeId, newName }) {
       commit("ADD_NODE_NAME", { nodeId, newName });
+    },
+    addChild({ commit }, child) {
+      commit('ADD_CHILD', child);
+    },
+    deleteChild({ commit }, childId) {
+      commit('DELETE_CHILD', childId);
     }
   },
   getters: {
     getTreeData: (state) => state.data,
     getEditingNodeId: (state) => state.editingNodeId,
+  },
+  methods: {
+    findNodeById(id, nodes) {
+      for (let node of nodes) {
+        if (node.id === id) {
+          return node;
+        }
+        if (node.children) {
+          const childNode = this.findNodeById(id, node.children);
+          if (childNode) return childNode;
+        }
+      }
+      return null;
+    }
   }
 });

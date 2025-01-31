@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import { mapState  } from 'vuex';
 export default {
   data() {
     return {
@@ -30,6 +31,9 @@ export default {
   props: {
     isOpen: Boolean,
     node: Object
+  },
+  computed: {
+    ...mapState(["selectedNodeId",]), // Get tree data from Vuex
   },
   methods: {
     openPopup() {
@@ -43,7 +47,7 @@ export default {
       console.log('Edit Group clicked');
     },
     createChildGroup() {
-      this.$emit("createChildGroup");
+      this.$emit("createChildGroup",this.selectedNodeId);
       // Logic for "Create Child Group"
       console.log('Create Child Group clicked');
     },
@@ -53,7 +57,7 @@ export default {
     },
     removeGroup() {
       // Logic for "Remove Group"
-      console.log('Remove Group clicked');
+      this.$emit("addRemoveClinicians");
     }
   }
 };
