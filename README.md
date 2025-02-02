@@ -47,16 +47,19 @@ This app helps visualize a parent-child tree structure and provides functionalit
 
 7. You can use searchbar to check for the children
 
+8.Can Arrange the node by dragging and drop the child
+
 
 ``
 ## Demo Screenshots
 Here’s a preview of the app:
 
 ![Screenshot 1](./src/assets/Screenshot%202025-02-02%20112000.jpg)
-![Screenshot 2](./src/assets/Screenshot%202025-02-02%20112043.jpg)
+![Screenshot 2](./src/assets/Screenshottest3.jpg)
 ![Screenshot 3](./src/assets/Screenshot%202025-02-02%20112119.jpg)
 ![Screenshot 4](./src/assets/Screenshot%202025-02-02%20112202.jpg)
 ![Screenshot 5](./src/assets/Screenshot%202025-02-02%20112242.jpg)
-
+![Screenshot 6](./src/assets/Screenshottest1.jpg)
+![Screenshot 7](./src/assets/Screenshottest2.jpg)
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
