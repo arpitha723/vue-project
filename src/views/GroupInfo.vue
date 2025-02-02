@@ -92,17 +92,13 @@
           children: []
         };
         this.addChild(newChild);  // Dispatch action to add child
-        // name  = ''; // Clear the input
+       
       }
  
 
     },
     async deleteChildNode(node){
-      console.log("selectedNodeChildren",this.selectedNodeChildren);
-      console.log("node",node)
       await  this.deleteChild(node);
-      console.log(this.$store.state.result); 
-      console.log(this.result);
       if (this.result) {
         this.$refs.notification.showNotification({
           title: 'Success!',

@@ -8,12 +8,9 @@
 </template>
 
 <script>
-// import { ref } from 'vue';
-// import data from './data.js';
 import { mapState,mapActions  } from 'vuex';
 import PopupModal from '../components/PopupModal.vue';
 import AddPopup from '../components/AddPopup.vue';
-// import { useRouter } from 'vue-router';
 import { nextTick } from 'vue';
 import TreeNode from '../components/TreeNode.vue';
 
@@ -22,11 +19,9 @@ import TreeNode from '../components/TreeNode.vue';
 export default {
   data() {
     return {
-      // data,
       editNode:false,
       showModal: false,
       showAddModal:false,
-      // selectedNode: null,
       updateData:null,
       
     };
