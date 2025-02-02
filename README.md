@@ -52,11 +52,11 @@ This app helps visualize a parent-child tree structure and provides functionalit
 ## Demo Screenshots
 Here’s a preview of the app:
 
-![Screenshot 1](./src/assets/Screenshot 2025-02-02 112000.jpg)
-![Screenshot 2](./src/assets/Screenshot 2025-02-02 112043.jpg)
-![Screenshot 3](./src/assets/Screenshot 2025-02-02 112119.jpg)
-![Screenshot 4](./src/assets/Screenshot 2025-02-02 112202.jpg)
-![Screenshot 5](./src/assets/Screenshot 2025-02-02 112242.jpg)
+![Screenshot 1](../src/assets/Screenshot 2025-02-02 112000.jpg)
+![Screenshot 2](../src/assets/Screenshot 2025-02-02 112043.jpg)
+![Screenshot 3](../src/assets/Screenshot 2025-02-02 112119.jpg)
+![Screenshot 4](../src/assets/Screenshot 2025-02-02 112202.jpg)
+![Screenshot 5](../src/assets/Screenshot 2025-02-02 112242.jpg)
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
