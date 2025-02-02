@@ -9,10 +9,9 @@
       @change="onNodesChange" 
     >
       <div v-for="node in nodes" :key="node.id" class="tree-node">
-        <div class="node-header" @click="toggleCollapse(node.id)">
+        <div class="node-header" @click="toggleCollapseAndLoad(node)">
           <span class="toggle-icon">{{ isCollapsed(node.id) ? '⊞' : '⊟' }} </span>
-          <span v-if="!node.isLoaded" @click="loadChildren(node)">⌛</span>
-          
+          <!-- <span v-if="!node.isLoaded" @click="loadChildren(node)">⌛</span> -->
           <input
             v-if="node.isEditing?node.isEditing:false"
             :key="node.id"
@@ -72,8 +71,13 @@
       };
     },
     mounted() {
-    this.initializeNodes(this.nodes); // Ensure isEditing is added to every node
-    },
+      this.nodes.forEach(node => {
+    this.collapsedNodes.add(node.id); // Mark all nodes as collapsed initially
+    if (node.children) {
+      this.initializeNodes(node.children); // Ensure children nodes also have the collapsed state
+    }
+  });
+  },
     watch: {
     // 🔥 Watch `editNode` and `currentNodeId` to update only the specific node
     editNode(newValue) {
@@ -97,17 +101,62 @@
       });
       console.log("node ",nodes)
     },
-  
-      toggleCollapse(nodeId) {
-        if (this.collapsedNodes.has(nodeId)) {
-          this.collapsedNodes.delete(nodeId);
-        } else {
-          this.collapsedNodes.add(nodeId);
+    async toggleCollapseAndLoad(node) {
+    if (this.collapsedNodes.has(node.id)) {
+      // Node is collapsed; collapse it by removing it from the set
+      this.collapsedNodes.delete(node.id);
+      if (!node.isLoaded) {
+        try {
+          // Load children if not already loaded
+          const children = await this.loadNodeChildren(node.id);
+          if (children && Array.isArray(children)) {
+            node.children = [...children];  // Force reactivity to detect changes
+          }
+
+          // Mark the node as loaded
+          node.isLoaded = true;
+          await this.$nextTick(); // Ensure DOM is updated properly
+        } catch (error) {
+          console.error("Error loading children:", error);
         }
-      },
-      isCollapsed(nodeId) {
-        return this.collapsedNodes.has(nodeId);
-      },
+      }
+    } else {
+      // Node is collapsed, expand it +
+      this.collapsedNodes.add(node.id);
+
+      // Check if children are loaded
+      // if (!node.isLoaded) {
+      //   try {
+      //     // Load children if not already loaded
+      //     const children = await this.loadNodeChildren(node.id);
+      //     if (children && Array.isArray(children)) {
+      //       node.children = [...children];  // Force reactivity to detect changes
+      //     }
+
+      //     // Mark the node as loaded
+      //     node.isLoaded = true;
+      //     await this.$nextTick(); // Ensure DOM is updated properly
+      //   } catch (error) {
+      //     console.error("Error loading children:", error);
+      //   }
+      // }
+    }
+  },
+
+  isCollapsed(nodeId) {
+    console.log("node",nodeId)
+    return this.collapsedNodes.has(nodeId);
+  },
+      // toggleCollapse(nodeId) {
+      //   if (this.collapsedNodes.has(nodeId)) {
+      //     this.collapsedNodes.delete(nodeId);
+      //   } else {
+      //     this.collapsedNodes.add(nodeId);
+      //   }
+      // },
+      // isCollapsed(nodeId) {
+      //   return this.collapsedNodes.has(nodeId);
+      // },
       showPopUp(node) {
         console.log("in tree node",node)
         this.currentNode = node

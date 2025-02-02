@@ -37,7 +37,7 @@ This app helps visualize a parent-child tree structure and provides functionalit
 ## Usage
 
 1. After running the app, you'll see the home page with tree strucure of parent and child node .
-2. Each node will display a ⌛ icon, indicating that you need to click on it to load the node, as lazy loading has been introduced
+2. Each node will display based on lazy loading 
 3. Create a new child group by clicking on 'Create Child Group'.
 
 4. Edit Group group name by clicking on Edit Child group.
