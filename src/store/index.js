@@ -1,5 +1,16 @@
 import { createStore } from 'vuex';
 import data from '../data/data'; // Import your tree data
+
+function addNodeLevel(nodes, level = 1) {
+  return nodes.map(node => {
+    node.level = level; // Add level to node
+    if (node.children) {
+      node.children = addNodeLevel(node.children, level + 1); // Recursively add level to children
+    }
+    return node;
+  });
+}
+
 function findNodeById(nodes, id) {
   for (let node of nodes) {
     if (node.id === id) {
@@ -37,7 +48,7 @@ function updateNodeEditing(nodes, nodeId) {
 }
 export default createStore({
   state: {
-    data: data, // Store tree data globally
+    data: addNodeLevel(data), // Store tree data globally
     editingNodeId: null,
     selectedNodeId: null,
     selectedNodeChildren: [] ,
@@ -81,7 +92,7 @@ export default createStore({
     
       function addNode(nodes) {
         nodes.forEach((node) => {
-          // console.log("node click",node)
+          console.log("node click",node)
           if (node.id === nodeId) {
              let data ={
               id: `child-${Date.now()}`, name: newName
@@ -154,6 +165,9 @@ export default createStore({
       if (node) {
         node.isLoaded = true;
       }
+    },
+    REFRESH_NODE_LEVELS(state) {
+      state.data = addNodeLevel(state.data); // Refresh levels
     }
   },
   actions: {
@@ -167,25 +181,34 @@ export default createStore({
     saveNodeEdit({ commit }, { nodeId, newName }) {
       commit("UPDATE_NODE_NAME", { nodeId, newName });
       commit("SET_EDITING_NODE", null); // Exit edit mode
+      commit('REFRESH_NODE_LEVELS');
+
     },
     addNode({ commit }, { nodeId, newName }) {
       commit("ADD_NODE_NAME", { nodeId, newName });
+      commit('REFRESH_NODE_LEVELS');
     },
     addChild({ commit }, child) {
       commit('ADD_CHILD', child);
+      commit('REFRESH_NODE_LEVELS');
       // this.$forceUpdate();
     },
     deleteChild({ commit }, childId) {
       commit('DELETE_CHILD', childId);
+      commit('REFRESH_NODE_LEVELS');
     },
     setEditFlag({ commit }, childId) {
       commit('SET_EDIT_FLAG', childId);
     },
     updateChild({ commit }, childId) {
       commit('UPDATE_CHILD', childId);
+      commit('REFRESH_NODE_LEVELS');
     },
     loadNodeChildren({ commit }, nodeId) {
       commit('LOAD_CHILDREN', nodeId);
+    },
+    refreshNodeLevels({ commit }) {
+      commit('REFRESH_NODE_LEVELS');
     }
   },
   getters: {

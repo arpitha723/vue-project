@@ -5,13 +5,16 @@
         <div class="popup-option" @click="editGroup">
           <i class="fa fa-pencil"></i> Edit Group
         </div>
-        <div class="popup-option" @click="createChildGroup">
+        <div class="popup-option" :class="{ 'disabled': selectedNodeId.level === 4 }" @click="createChildGroup">
           <i class="fa fa-plus"></i> Create Child Group
         </div>
-        <div class="popup-option" @click="addRemoveClinicians">
+        <div class="popup-option" :class="{ 'disabled': selectedNodeId.level === 1 || selectedNodeId.level === 2 || selectedNodeId.level > 3}"  @click="addRemoveClinicians">
           <i class="fa fa-plus"></i> Add/Remove Clinicians
         </div>
-        <div class="popup-option" @click="removeGroup">
+        <div class="popup-option" :class="{ 'disabled': selectedNodeId.level === 3 ||selectedNodeId.level === 4 }" @click="addRemoveClinicians">
+          <i class="fa fa-plus"></i> Add/Remove Group
+        </div>
+        <div class="popup-option" :class="{ 'disabled': selectedNodeId.level === 4 }" @click="removeGroup">
           <i class="fa fa-trash"></i> Remove Group
         </div>
       </div>
@@ -127,5 +130,9 @@ h3 {
 
 .close-btn:hover {
   background-color: #d32f2f;
+}
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
 }
 </style>

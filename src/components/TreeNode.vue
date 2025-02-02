@@ -1,40 +1,53 @@
 <template>
-    <div class="tree-container">
+  <div class="tree-container">
+    <draggable
+      :list="nodes" 
+      @start="onDragStart"
+      @end="onDragEnd"
+      :group="'nodes'"
+      class="tree-node-list"
+      @change="onNodesChange" 
+    >
       <div v-for="node in nodes" :key="node.id" class="tree-node">
         <div class="node-header" @click="toggleCollapse(node.id)">
-          <span class="toggle-icon">{{ isCollapsed(node.id) ? '⊞' : '⊟' }}
-            
-          </span>
+          <span class="toggle-icon">{{ isCollapsed(node.id) ? '⊞' : '⊟' }} </span>
           <span v-if="!node.isLoaded" @click="loadChildren(node)">⌛</span>
+          
           <input
-          v-if="node.isEditing?node.isEditing:false"
-          :key="node.id"
-          v-model="currentNode.name"
-          @blur="saveEdit(node)"
-          @keyup.enter="saveEdit(node)"
-          ref="editInput"
-          class="edit-input"
-        />
-
-          <span  v-else class="node-title">{{ node.name }}</span>
+            v-if="node.isEditing?node.isEditing:false"
+            :key="node.id"
+            v-model="currentNode.name"
+            @blur="saveEdit(node)"
+            @keyup.enter="saveEdit(node)"
+            ref="editInput"
+            class="edit-input"
+          />
+          
+          <span v-else class="node-title">{{ node.name }}</span>
           <button class="button-class" @click.stop="showPopUp(node)">
-          <div class="ellipsis">⋮</div>
-        </button>
-        <div v-if="isDelete ==true && currentNode?.id== node.id" class="popup-option" @click="removeGroup">
-          <i class="fa fa-trash"></i> 
+            <div class="ellipsis">⋮</div>
+          </button>
+
+          <div v-if="isDelete ==true && currentNode?.id== node.id" class="popup-option" @click="removeGroup">
+            <i class="fa fa-trash"></i> 
+          </div>
         </div>
-        
-        </div>
+
         <div v-show="!isCollapsed(node.id)" class="children">
-          <TreeNode v-if="node.children && node.isLoaded" :nodes="node.children"  @showPopUp="showPopUp" />
+          <TreeNode v-if="node.children && node.isLoaded" :nodes="node.children" @showPopUp="showPopUp" />
         </div>
       </div>
-    </div>
-  </template>
+    </draggable>
+  </div>
+</template>
   
   <script>
   import {mapActions  } from 'vuex';
+ import { VueDraggableNext } from 'vue-draggable-next'
   export default {
+    components: {
+      draggable: VueDraggableNext,
+        },
     name: 'TreeNode',
     props: {
       nodes: {
@@ -126,6 +139,15 @@
       console.log(node)
       this.loadNodeChildren(node.id); // Lazy load children for this node
     },
+    onNodesChange() {
+    this.$emit('update:nodes', this.nodes);  // Emit the updated list of nodes to the parent
+  },
+  onDragStart(event) {
+    console.log('Drag started', event);
+  },
+  onDragEnd(event) {
+    console.log('Drag ended', event);
+  },
 
     }
   };

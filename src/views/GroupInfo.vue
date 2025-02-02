@@ -1,6 +1,6 @@
 <template>
     <div class="container mt-4">
-      <h2>Clinicians in group</h2>
+      <h2>{{ selectedNodeId.level == 1 || selectedNodeId.level == 2 ? 'Group Members' : 'Clinicians in Group' }}</h2>
       <div class="row mb-3">
         <div class="col-4 d-flex justify-content-start">
         <button type="button" class="btn btn-success" @click="openAddModal"><i class="fa fa-plus"></i> </button>

@@ -2,7 +2,7 @@
   <div>
     <PopupModal @addRemoveClinicians="addRemoveClinicians" :isOpen="showModal" :node="selectedNode" @createChildGroup="createChildGroup" @closeModal="closeModal" @edit="edit"   />
     <AddPopup :headerName="'Create Child Group'" :isAddOpen="showAddModal" :node="selectedNode" @closeAddModal="closeAddModal" @edit="edit"  @saveGroup="saveGroup" />
-    <TreeNode :nodes="data" @showPopUp="openModal" :updateData="updateData" :editNode="editNode" @saveEdit="saveEdit"/>
+    <TreeNode @update:nodes="updateNodes"  :nodes="data" @showPopUp="openModal" :updateData="updateData" :editNode="editNode" @saveEdit="saveEdit"/>
 
     </div>
 </template>
@@ -105,6 +105,9 @@ export default {
     triggerSuccess(message) {
       this.$refs.notification.showNotification(message, 'success');
     },
+    updateNodes(newNodes) {
+      this.data = newNodes;  // Update the nodes array in the parent component
+    }
 
 }
 };
