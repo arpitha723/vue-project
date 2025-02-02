@@ -9,13 +9,14 @@ It is sample application with vue.js
 
 
 ## Introduction
-This app helps visualize a parent-child tree structure and provides functionality to add, delete, and update nodes within it
+This app helps visualize a parent-child tree structure and provides functionality to add, delete, and update nodes within it.
 
 ## Features
 - Edit Group
 - Create Child group
 - Add/Remove Clinician
 - Remove group
+- Drag and drop nodes 
 
 ## Installation
 1. Clone this repository:
