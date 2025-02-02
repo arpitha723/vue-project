@@ -25,12 +25,14 @@
         </div>
       </div>
     </div>
+    <NotificationComponent ref="notification" /> 
       <AddPopup :headerName="'Create Clinician'" :isAddOpen="showAddModal" :node="selectedNode" @closeAddModal="closeAddModal" @edit="edit"  @saveGroup="saveGroup" />
     </div>
   </template>
   
   <script>
   import AddPopup from '../components/AddPopup.vue';
+  import NotificationComponent from '../components/NotificationComponent.vue';
   import { useRoute } from 'vue-router';
   import { mapState,mapActions } from 'vuex';
   export default {
@@ -45,9 +47,10 @@
         showAddModal:false
       };
     },
-    components: {AddPopup },
+    components: {AddPopup ,NotificationComponent},
+    
     computed: {
-      ...mapState(['selectedNodeId', 'selectedNodeChildren']),
+      ...mapState(['selectedNodeId', 'selectedNodeChildren','result']),
   
       filteredUsers() {
         console.log("selectedNodeChildren",this.selectedNodeChildren)
@@ -94,10 +97,25 @@
  
 
     },
-    deleteChildNode(node){
+    async deleteChildNode(node){
       console.log("selectedNodeChildren",this.selectedNodeChildren);
       console.log("node",node)
-      this.deleteChild(node);
+      await  this.deleteChild(node);
+      console.log(this.$store.state.result); 
+      console.log(this.result);
+      if (this.result) {
+        this.$refs.notification.showNotification({
+          title: 'Success!',
+          message: `Child node with ID: ${node.id} has been deleted.`,
+          type: 'success' // Success alert
+        });
+      } else {
+        this.$refs.notification.showNotification({
+          title: 'Error!',
+          message: `Child node with ID: ${node.id} cannot be deleted because it has children.`,
+          type: 'danger' // Error alert
+        });
+      }
     }
   }
   };

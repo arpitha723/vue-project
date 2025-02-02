@@ -3,14 +3,14 @@ const hospitalData = [
       id: 'hospital-1',
       name: 'Hospital One',
       children: [
-        { id: 'child-1', name: 'Child 1' },
-        { id: 'child-2', name: 'Child 2' },
+        { id: 'child-1', name: 'Shoulder' },
+        { id: 'child-2', name: 'Knee' },
         {
           id: 'child-3',
-          name: 'Child 3',
+          name: 'Stomach',
           children: [
-            { id: 'child-a1', name: 'Child A1' },
-            { id: 'child-a2', name: 'Child A2' }
+            { name: 'Crohns Disease', id: 'Child A1' },
+            { name: 'Ulcreative Colotis', id: 'Child A2' }
           ]
         }
       ]
@@ -19,8 +19,9 @@ const hospitalData = [
       id: 'hospital-2',
       name: 'Hospital Two',
       children: [
-        { id: 'child-4', name: 'Child 4' },
-        { id: 'child-5', name: 'Child 5' }
+        { name: 'Gamling addiction-4', id: 'Child 4' },
+        { name: 'Anxiety', id: 'Child 5' },
+        { name: 'Depression', id: 'Child 6' }
       ]
     }
   ];

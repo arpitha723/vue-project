@@ -2,11 +2,12 @@
     <div class="tree-container">
       <div v-for="node in nodes" :key="node.id" class="tree-node">
         <div class="node-header" @click="toggleCollapse(node.id)">
-          <span class="toggle-icon">{{ isCollapsed(node.id) ? '▶' : '▼' }}</span>
-
-        
+          <span class="toggle-icon">{{ isCollapsed(node.id) ? '⊞' : '⊟' }}
+            
+          </span>
+          <span v-if="!node.isLoaded" @click="loadChildren(node)">⌛</span>
           <input
-          v-if="currentNode?.id== node.id"
+          v-if="node.isEditing?node.isEditing:false"
           :key="node.id"
           v-model="currentNode.name"
           @blur="saveEdit(node)"
@@ -25,13 +26,14 @@
         
         </div>
         <div v-show="!isCollapsed(node.id)" class="children">
-          <TreeNode v-if="node.children" :nodes="node.children"  @showPopUp="showPopUp" />
+          <TreeNode v-if="node.children && node.isLoaded" :nodes="node.children"  @showPopUp="showPopUp" />
         </div>
       </div>
     </div>
   </template>
   
   <script>
+  import {mapActions  } from 'vuex';
   export default {
     name: 'TreeNode',
     props: {
@@ -56,7 +58,33 @@
         collapsedNodes: new Set() 
       };
     },
+    mounted() {
+    this.initializeNodes(this.nodes); // Ensure isEditing is added to every node
+    },
+    watch: {
+    // 🔥 Watch `editNode` and `currentNodeId` to update only the specific node
+    editNode(newValue) {
+      if (this.currentNode !== null) {
+        this.updateNodeEditing(this.nodes, this.currentNode, newValue);
+      }
+      console.log("this.updateNodeEditing",newValue)
+    }
+  },
     methods: {
+      ...mapActions(["loadNodeChildren"]),
+      initializeNodes(nodes) {
+     
+      nodes.forEach((node) => {
+        if (!("isEditing" in node)) {
+          node.isEditing = false; // Vue 3 reactivity handles new properties automatically
+        }
+        if (node.children) {
+          this.initializeNodes(node.children); // Recursively ensure all children have isEditing
+        }
+      });
+      console.log("node ",nodes)
+    },
+  
       toggleCollapse(nodeId) {
         if (this.collapsedNodes.has(nodeId)) {
           this.collapsedNodes.delete(nodeId);
@@ -70,24 +98,33 @@
       showPopUp(node) {
         console.log("in tree node",node)
         this.currentNode = node
-      this.$emit('showPopUp', node); // Emit event to parent with node details
+        this.$emit('showPopUp', node); // Emit event to parent with node details
     },
-    // editNode(node) {
-    //   node.isEditing = true;
-    //   console.log("in tree node",this.updateData)
-    //   this.$nextTick(() => {
-    //     this.$refs.editInput?.[0]?.focus(); // Auto-focus input
-    //   });
-    // },
     deleteNode(node) {
       this.$emit('deleteNode', node); // Emit event to parent
     },
+    updateNodeEditing(nodes, nodeId, newValue) {
+      nodes.forEach(node => {
+        if (node.id === nodeId.id) {
+          node.isEditing = newValue;
+        }
+        if (node.children) {
+          this.updateNodeEditing(node.children, nodeId, newValue);
+        }
+      });
+      console.log(this.nodes)
+    },
     saveEdit(node) {
+      node.isEditing = false;
       this.$emit('saveEdit', node);
       if (!this.currentNode) return;
       node.name = this.currentNode.name; // Save updated name
       this.currentNode = null; // Exit edit mode
          node.isEditing = false;
+    },
+    loadChildren(node) {
+      console.log(node)
+      this.loadNodeChildren(node.id); // Lazy load children for this node
     },
 
     }
@@ -102,14 +139,24 @@
   
   .tree-node {
     margin: 5px 0;
+    position: relative;
+    
   }
   
   .node-header {
-    cursor: pointer;
+    position: relative;
     display: flex;
     align-items: center;
   }
-  
+  .node-header::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -20px;
+  width: 20px;
+  border-top: 2px dotted #000; 
+}
+
   .toggle-icon {
     margin-right: 5px;
     font-size: 12px;

@@ -3,6 +3,7 @@
     <PopupModal @addRemoveClinicians="addRemoveClinicians" :isOpen="showModal" :node="selectedNode" @createChildGroup="createChildGroup" @closeModal="closeModal" @edit="edit"   />
     <AddPopup :headerName="'Create Child Group'" :isAddOpen="showAddModal" :node="selectedNode" @closeAddModal="closeAddModal" @edit="edit"  @saveGroup="saveGroup" />
     <TreeNode :nodes="data" @showPopUp="openModal" :updateData="updateData" :editNode="editNode" @saveEdit="saveEdit"/>
+
     </div>
 </template>
 
@@ -35,7 +36,7 @@ export default {
     ...mapState(["data","selectedNodeId",]), // Get tree data from Vuex
   },
   methods: {
-    ...mapActions(["startEditing", "saveNodeEdit","addNode","selectNode"]),
+    ...mapActions(["startEditing", "saveNodeEdit","addNode","selectNode","setEditFlag"]),
     showPopup(node) {
       this.updateData = node;
       console.log("node",node)
@@ -66,6 +67,7 @@ export default {
       this.showAddModal = true;
     },
     closeModal() {
+      this.editNode = false;
       this.showModal = false;
       this.selectNode(null)
     },
@@ -74,8 +76,10 @@ export default {
       this.selectNode(null)
     },
     edit() {
+
       this.editNode = true;
       this.showModal = false;
+      this.setEditFlag(this.selectedNodeId.id)
      console.log("editNode")
     },
     createChildGroup(node) {
@@ -99,7 +103,13 @@ export default {
       console.log("ggggg",this.selectedNodeId)
       let id = this.selectedNodeId.id
       this.$router.push({ name: 'GroupInfo', params: { id: id } });
-    }
+    },
+    triggerError(message) {
+      this.$refs.notification.showNotification(message, 'danger');
+    },
+    triggerSuccess(message) {
+      this.$refs.notification.showNotification(message, 'success');
+    },
 
 }
 };

@@ -14,12 +14,34 @@ function findNodeById(nodes, id) {
   }
   return null; // Return null if no match is found
 }
+const resetEditing = (nodes) => {
+  nodes.forEach(node => {
+    node.isEditing = false; // Reset isEditing flag for all nodes
+    if (node.children) {
+      resetEditing(node.children); // Recurse into children
+    }
+  });
+};
+function updateNodeEditing(nodes, nodeId) {
+  resetEditing(nodes)
+  for (let node of nodes) {
+    if (node.id === nodeId) {
+      node.isEditing = true; // Update the node
+      return true; // Stop recursion if found
+    }
+    if (node.children && updateNodeEditing(node.children, nodeId)) {
+      return true; // Continue searching in children
+    }
+  }
+  return false;
+}
 export default createStore({
   state: {
     data: data, // Store tree data globally
     editingNodeId: null,
     selectedNodeId: null,
-    selectedNodeChildren: [] // Track which node is being edited
+    selectedNodeChildren: [] ,
+    result:false// Track which node is being edited
   },
   mutations: {
     SET_SELECTED_NODE(state, nodeObject) {
@@ -98,14 +120,40 @@ export default createStore({
       }
     
     },
-    DELETE_CHILD(state, childId) {
-      console.log("childId",state.selectedNodeId.id)
-      const node = findNodeById(state.data, state.selectedNodeId.id)
-      if (node) {
-        node.children = node.children.filter(child => child.id !== childId.id);
-        state.selectedNodeChildren = state.selectedNodeChildren.filter(child => child.id !== childId.id)
+   // Vuex Store Mutation
+   DELETE_CHILD(state, childId) {
+    console.log("Deleting child with ID:", childId);
+
+    const node = findNodeById(state.data, state.selectedNodeId.id);
+    if (node) {
+      const childNode = node.children.find(child => child.id === childId.id);
+
+      if (childNode) {
+        if (childNode.children && childNode.children.length > 0) {
+          state.result = false; // Cannot delete if there are children
+        } else {
+          node.children = node.children.filter(child => child.id !== childId.id);
+          state.selectedNodeChildren = state.selectedNodeChildren.filter(child => child.id !== childId.id);
+          state.result = true; // Successful deletion
+        }
       }
-    
+    }
+  },
+
+    SET_EDIT_FLAG(state,newId){
+      updateNodeEditing(state.data, newId);
+    },
+    UPDATE_CHILD(state,updatedData){
+
+      if (!state.selectedNodeId) return;
+      updatedData.name = state.selectedNodeId.name;
+    },
+    LOAD_CHILDREN(state, nodeId) {
+      // Find node by ID and mark its children as loaded
+      const node = findNodeById(state.data, nodeId);
+      if (node) {
+        node.isLoaded = true;
+      }
     }
   },
   actions: {
@@ -129,24 +177,20 @@ export default createStore({
     },
     deleteChild({ commit }, childId) {
       commit('DELETE_CHILD', childId);
+    },
+    setEditFlag({ commit }, childId) {
+      commit('SET_EDIT_FLAG', childId);
+    },
+    updateChild({ commit }, childId) {
+      commit('UPDATE_CHILD', childId);
+    },
+    loadNodeChildren({ commit }, nodeId) {
+      commit('LOAD_CHILDREN', nodeId);
     }
   },
   getters: {
     getTreeData: (state) => state.data,
     getEditingNodeId: (state) => state.editingNodeId,
   },
-  methods: {
-    findNodeById(id, nodes) {
-      for (let node of nodes) {
-        if (node.id === id) {
-          return node;
-        }
-        if (node.children) {
-          const childNode = this.findNodeById(id, node.children);
-          if (childNode) return childNode;
-        }
-      }
-      return null;
-    }
-  }
+
 });
