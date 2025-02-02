@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import TreeNode from '@/components/TreeNode.vue';
+import TreeNode from '../../components/TreeNode.vue';
 
 describe('TreeNode.vue', () => {
   let wrapper;

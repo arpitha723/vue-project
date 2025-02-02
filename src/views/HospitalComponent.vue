@@ -28,7 +28,7 @@ export default {
   },
   components: { PopupModal,TreeNode,AddPopup },
   computed: {
-    ...mapState(["data","selectedNodeId",]), // Get tree data from Vuex
+    ...mapState(["data","selectedNodeId",]), // Get  data from Vuex
   },
   methods: {
     ...mapActions(["startEditing", "saveNodeEdit","addNode","selectNode","setEditFlag"]),
@@ -112,8 +112,6 @@ export default {
 }
 };
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .tree {
       list-style-type: none;

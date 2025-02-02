@@ -51,15 +51,12 @@ export default {
     },
     createChildGroup() {
       this.$emit("createChildGroup",this.selectedNodeId);
-      // Logic for "Create Child Group"
       console.log('Create Child Group clicked');
     },
     addRemoveClinicians() {
-      // Logic for "Add/Remove Clinicians"
       this.$emit("addRemoveClinicians");
     },
     removeGroup() {
-      // Logic for "Remove Group"
       this.$emit("addRemoveClinicians");
     }
   }

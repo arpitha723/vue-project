@@ -77,8 +77,6 @@
       this.showAddModal = true;
     },
     fetchNodeChildren() {
-      // Replace this with actual logic to fetch or retrieve the node and its children
-      // Example:
       const node = this.findNodeById(this.nodeId, this.$root.data);
       if (node) {
         this.nodeChildren = node.children;

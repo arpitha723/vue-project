@@ -79,7 +79,7 @@
   });
   },
     watch: {
-    // 🔥 Watch `editNode` and `currentNodeId` to update only the specific node
+    // Watch `editNode` and `currentNodeId` to update only the specific node
     editNode(newValue) {
       if (this.currentNode !== null) {
         this.updateNodeEditing(this.nodes, this.currentNode, newValue);
@@ -93,7 +93,7 @@
      
       nodes.forEach((node) => {
         if (!("isEditing" in node)) {
-          node.isEditing = false; // Vue 3 reactivity handles new properties automatically
+          node.isEditing = false; 
         }
         if (node.children) {
           this.initializeNodes(node.children); // Recursively ensure all children have isEditing
@@ -123,23 +123,6 @@
     } else {
       // Node is collapsed, expand it +
       this.collapsedNodes.add(node.id);
-
-      // Check if children are loaded
-      // if (!node.isLoaded) {
-      //   try {
-      //     // Load children if not already loaded
-      //     const children = await this.loadNodeChildren(node.id);
-      //     if (children && Array.isArray(children)) {
-      //       node.children = [...children];  // Force reactivity to detect changes
-      //     }
-
-      //     // Mark the node as loaded
-      //     node.isLoaded = true;
-      //     await this.$nextTick(); // Ensure DOM is updated properly
-      //   } catch (error) {
-      //     console.error("Error loading children:", error);
-      //   }
-      // }
     }
   },
 
@@ -147,16 +130,6 @@
     console.log("node",nodeId)
     return this.collapsedNodes.has(nodeId);
   },
-      // toggleCollapse(nodeId) {
-      //   if (this.collapsedNodes.has(nodeId)) {
-      //     this.collapsedNodes.delete(nodeId);
-      //   } else {
-      //     this.collapsedNodes.add(nodeId);
-      //   }
-      // },
-      // isCollapsed(nodeId) {
-      //   return this.collapsedNodes.has(nodeId);
-      // },
       showPopUp(node) {
         console.log("in tree node",node)
         this.currentNode = node
@@ -182,7 +155,7 @@
       if (!this.currentNode) return;
       node.name = this.currentNode.name; // Save updated name
       this.currentNode = null; // Exit edit mode
-         node.isEditing = false;
+      node.isEditing = false;
     },
     loadChildren(node) {
       console.log(node)

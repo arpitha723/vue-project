@@ -29,11 +29,11 @@
       saveName() {
         if (this.name) {
           this.$emit("saveGroup", this.name); // Emit name to parent component
-          console.log('Name saved:', this.name);
           this.close();
         } else {
           alert('Please enter a name');
         }
+        this.name = ""
       },
       closePopup(event) {
         if (event.target === event.currentTarget) {

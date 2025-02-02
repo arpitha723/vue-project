@@ -1,5 +1,5 @@
 import { createStore } from 'vuex';
-import data from '../data/data'; // Import your tree data
+import data from '../data/data'; // Import the data
 
 function addNodeLevel(nodes, level = 1) {
   return nodes.map(node => {
@@ -48,7 +48,7 @@ function updateNodeEditing(nodes, nodeId) {
 }
 export default createStore({
   state: {
-    data: addNodeLevel(data), // Store tree data globally
+    data: addNodeLevel(data), // Store  data globally
     editingNodeId: null,
     selectedNodeId: null,
     selectedNodeChildren: [] ,
@@ -57,18 +57,15 @@ export default createStore({
   mutations: {
     SET_SELECTED_NODE(state, nodeObject) {
       state.selectedNodeId = nodeObject;
-    //   console.log('state.data:', state.data); // Log state data
-    // console.log('nodeObject.id:', nodeObject.id)
-    if(!nodeObject){
-      return
-    }
+      if(!nodeObject){
+        return
+      }
   
-    const node = findNodeById(state.data, nodeObject.id);
+      const node = findNodeById(state.data, nodeObject.id);
       console.log(node)
       if (node) {
         state.selectedNodeChildren = node.children?node.children:[];
       }
-      console.log('state.selectedNodeChild',state.selectedNodeChildre)
     },
 
     SET_EDITING_NODE(state, nodeId) {
